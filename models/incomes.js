@@ -12,7 +12,7 @@ const incomeSchema = new Schema({
   },
   category: {
     type: Schema.Types.ObjectId,
-    ref: "Category",
+    ref: "CategoryIncome",
     required: true,
   },
   description: String,

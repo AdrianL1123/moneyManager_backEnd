@@ -1,5 +1,5 @@
 const Category = require("../models/category");
-const Expense = require("../models/expenses");
+const Expense = require("../models/expense");
 
 const getCategories = async () => {
   const categories = await Category.find().sort({ name: 1 });

@@ -1,4 +1,5 @@
-const Expense = require("../models/expenses");
+const Expense = require("../models/expense");
+const Category = require("../models/category");
 
 const getExpenses = async (category) => {
   try {

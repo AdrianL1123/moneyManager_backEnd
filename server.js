@@ -29,7 +29,7 @@ mongoose
   });
 
 const expenseRouter = require("./routes/expense");
-app.use("/expense", expenseRouter);
+app.use("/expenses", expenseRouter);
 
 const incomeRouter = require("./routes/income");
 app.use("/income", incomeRouter);

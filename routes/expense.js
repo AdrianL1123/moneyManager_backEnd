@@ -8,7 +8,7 @@ const {
 
 const router = express.Router();
 
-const Expense = require("../models/expenses");
+const Expense = require("../models/expense");
 
 router.get("/", async (req, res) => {
   try {
@@ -16,6 +16,7 @@ router.get("/", async (req, res) => {
     const expenses = await getExpenses(category);
     res.status(200).send(expenses);
   } catch (e) {
+    console.log(e);
     res.status(400).send({ message: e.message });
   }
 });
