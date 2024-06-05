@@ -6,6 +6,7 @@ const {
   addNewCategory,
   updateCategory,
   deleteCategory,
+  getCategory,
 } = require("../controllers/category");
 
 const { isAdmin } = require("../middleware/auth");
@@ -18,6 +19,19 @@ router.get("/", async (req, res) => {
     res.status(400).send({
       message: error.message,
     });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const category = await getCategory(req.params.id);
+    if (category) {
+      res.status(200).send(category);
+    } else {
+      res.status(404).send({ message: "Category not found" });
+    }
+  } catch (e) {
+    res.status(400).send({ message: e.message });
   }
 });
 

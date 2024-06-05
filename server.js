@@ -32,7 +32,7 @@ const expenseRouter = require("./routes/expense");
 app.use("/expenses", expenseRouter);
 
 const incomeRouter = require("./routes/income");
-app.use("/income", incomeRouter);
+app.use("/incomes", incomeRouter);
 
 const categoriesRouter = require("./routes/category");
 app.use("/categories", categoriesRouter);

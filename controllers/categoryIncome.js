@@ -1,5 +1,5 @@
 const CategoryIncome = require("../models/categoryIncome");
-const Income = require("../models/incomes");
+const Income = require("../models/income");
 
 const getCategoriesIncome = async () => {
   const categories = await CategoryIncome.find().sort({ name: 1 });

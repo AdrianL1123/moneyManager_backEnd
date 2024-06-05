@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
-const categorySchema = new Schema({
+const categoryIncomeSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -9,5 +9,5 @@ const categorySchema = new Schema({
   icon: { type: String, required: true },
 });
 
-const CategoryIncome = model("CategoryIncome", categorySchema);
+const CategoryIncome = model("CategoryIncome", categoryIncomeSchema);
 module.exports = CategoryIncome;

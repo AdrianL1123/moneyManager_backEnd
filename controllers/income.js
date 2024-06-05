@@ -1,4 +1,5 @@
-const Income = require("../models/incomes");
+const Expense = require("../models/expense");
+const Income = require("../models/income");
 
 const getIncomes = async (category) => {
   try {
@@ -7,7 +8,7 @@ const getIncomes = async (category) => {
       filters.category = category;
     }
     const Incomes = await Income.find(filters)
-      .populate(category)
+      .populate("category")
       .sort({ _id: -1 });
     return Incomes;
   } catch (e) {
@@ -18,18 +19,27 @@ const getIncomes = async (category) => {
 //* just in case I am doing this
 const getIncome = async (id) => {
   try {
-    return await Category.findById(id);
+    return await Income.findById(id);
   } catch (e) {
     throw new Error(e);
   }
 };
 
-const addIncome = async (name, amount, description, category) => {
-  const newIncome = new Money({
+const addIncome = async (
+  name,
+  amount,
+  description,
+  category,
+  created_at,
+  user_id
+) => {
+  const newIncome = new Income({
     name,
     amount,
     description,
     category,
+    created_at,
+    user_id,
   });
   await newIncome.save();
   return newIncome;

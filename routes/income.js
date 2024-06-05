@@ -8,7 +8,8 @@ const {
 
 const router = express.Router();
 
-const Income = require("../models/incomes");
+const Income = require("../models/income");
+const { isUserValid } = require("../middleware/auth");
 
 router.get("/", async (req, res) => {
   try {
@@ -35,10 +36,17 @@ router.get("/:id", async (req, res) => {
 });
 
 //* add
-router.post("/", async (req, res) => {
+router.post("/", isUserValid, async (req, res) => {
   try {
     const { name, amount, description, category } = req.body;
-    const newIncome = await addIncome(name, amount, description, category);
+    const newIncome = new Income({
+      name,
+      amount,
+      description,
+      category,
+      user_id: req.user._id,
+    });
+    await newIncome.save();
     res.status(200).send(newIncome);
   } catch (e) {
     res.status(400).send({ message: e.message });

@@ -9,6 +9,7 @@ const {
 const router = express.Router();
 
 const Expense = require("../models/expense");
+const { isUserValid } = require("../middleware/auth");
 
 router.get("/", async (req, res) => {
   try {
@@ -36,10 +37,17 @@ router.get("/:id", async (req, res) => {
 });
 
 //* add
-router.post("/", async (req, res) => {
+router.post("/", isUserValid, async (req, res) => {
   try {
     const { name, amount, description, category } = req.body;
-    const newExpense = await addExpense(name, amount, description, category);
+    const newExpense = new Expense({
+      name,
+      amount,
+      description,
+      category,
+      user_id: req.user._id,
+    });
+    await newExpense.save();
     res.status(200).send(newExpense);
   } catch (e) {
     res.status(400).send({ message: e.message });
@@ -60,6 +68,7 @@ router.put("/:id", async (req, res) => {
     );
     res.status(200).send(updatedExpense);
   } catch (e) {
+    console.log(e);
     res.status(400).send({ message: e.message });
   }
 });

@@ -6,6 +6,14 @@ const getCategories = async () => {
   return categories;
 };
 
+const getCategory = async (id) => {
+  try {
+    return await Category.findById(id);
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
 const addNewCategory = async (name, icon) => {
   const newCategory = new Category({
     name,
@@ -44,6 +52,7 @@ const deleteCategory = async (_id) => {
 
 module.exports = {
   getCategories,
+  getCategory,
   addNewCategory,
   updateCategory,
   deleteCategory,

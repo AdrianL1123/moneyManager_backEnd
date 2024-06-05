@@ -8,7 +8,7 @@ const getExpenses = async (category) => {
       filters.category = category;
     }
     const Expenses = await Expense.find(filters)
-      .populate(category)
+      .populate("category")
       .sort({ _id: -1 });
     return Expenses;
   } catch (e) {
@@ -19,18 +19,27 @@ const getExpenses = async (category) => {
 //* just in case I am doing this
 const getExpense = async (id) => {
   try {
-    return await Ex.findById(id);
+    return await Expense.findById(id);
   } catch (e) {
     throw new Error(e);
   }
 };
 
-const addExpense = async (name, amount, description, category) => {
+const addExpense = async (
+  name,
+  amount,
+  description,
+  category,
+  created_at,
+  user_id
+) => {
   const newExpense = new Expense({
     name,
     amount,
     description,
     category,
+    created_at,
+    user_id,
   });
   await newExpense.save();
   return newExpense;
@@ -43,7 +52,7 @@ const updateExpense = async (
   description,
   category
 ) => {
-  const updatedExpense = await Income.findByIdAndUpdate(
+  const updatedExpense = await Expense.findByIdAndUpdate(
     expense_id,
     {
       name,

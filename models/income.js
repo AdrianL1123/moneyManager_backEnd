@@ -15,6 +15,15 @@ const incomeSchema = new Schema({
     ref: "CategoryIncome",
     required: true,
   },
+  created_at: {
+    type: Date,
+    default: Date.now(),
+  },
+  user_id: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   description: String,
 });
 
