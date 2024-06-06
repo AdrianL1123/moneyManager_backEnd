@@ -11,12 +11,11 @@ const {
 } = require("../config");
 
 //get orders
-const getSubsciptions = async (user) => {
+const getSubscriptions = async (user) => {
   try {
     let filters = {};
-    // only filter by customerEmail if the user is a normal user
     if (user && user.role === "user") {
-      filters.customerEmail = user.email;
+      filters.user_id = user._id;
     }
     const subsciptions = await Subscription.find(filters).sort({ _id: -1 });
     return subsciptions;
@@ -26,7 +25,7 @@ const getSubsciptions = async (user) => {
 };
 
 //get 1 order
-const getSubsciption = async (id) => {
+const getSubscription = async (id) => {
   try {
     return await Subscription.findById(id);
   } catch (error) {
@@ -35,12 +34,7 @@ const getSubsciption = async (id) => {
 };
 
 //todo ADD
-const addNewSubscription = async (
-  customerName,
-  customerEmail,
-  totalPrice,
-  status
-) => {
+const addNewSubscription = async (user_id, totalPrice, status) => {
   // 1. create a bill in billplz
   const billplz = await axios({
     method: "POST",
@@ -51,9 +45,7 @@ const addNewSubscription = async (
     },
     data: {
       collection_id: BILLPLZ_COLLECTION_ID,
-      email: customerEmail,
-      name: customerName,
-      amount: parseFloat(totalPrice) * 100,
+      amount: 5 * 100,
       description: "Payment for subscription",
       callback_url: FRONTEND_URL + "verify-payment",
       redirect_url: FRONTEND_URL + "verify-payment",
@@ -66,10 +58,9 @@ const addNewSubscription = async (
 
   // 3. create a new order
   const newSubscription = new Subscription({
-    customerName,
-    customerEmail,
     totalPrice,
     status,
+    user_id,
     billplz_id,
   });
   await newSubscription.save();
@@ -82,9 +73,6 @@ const addNewSubscription = async (
 // update order
 const updateSubscription = async (
   subscription_id,
-  customerName,
-  customerEmail,
-  products,
   totalPrice,
   status,
   billplz_id,
@@ -94,8 +82,6 @@ const updateSubscription = async (
     const updatedSubscription = await Subscription.findByIdAndUpdate(
       subscription_id,
       {
-        customerName,
-        customerEmail,
         totalPrice,
         status,
         billplz_id,
@@ -122,8 +108,8 @@ const deleteSubscription = async (id) => {
 };
 
 module.exports = {
-  getSubsciptions,
-  getSubsciption,
+  getSubscriptions,
+  getSubscription,
   addNewSubscription,
   updateSubscription,
   deleteSubscription,

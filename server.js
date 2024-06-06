@@ -41,7 +41,10 @@ const categoriesIncomeRouter = require("./routes/categoryIncome");
 app.use("/categoriesIncome", categoriesIncomeRouter);
 
 const subscriptionRouter = require("./routes/subscription");
-app.use("/subsciptions", subscriptionRouter);
+app.use("/subscriptions", subscriptionRouter);
+
+const paymentRouter = require("./routes/payment");
+app.use("/payment", paymentRouter);
 
 const userRoute = require("./routes/user");
 app.use("/users", userRoute);

@@ -77,8 +77,60 @@ const signUpUser = async (name, email, password) => {
   };
 };
 
+//* create user and get
+const getUsers = async () => {
+  try {
+    const Users = await User.find().sort({ _id: -1 });
+    return Users;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+const userAdd = async (name, email, password) => {
+  //* 1. check if email is already exists or not
+  const emailExist = await getUserByEmail(email);
+  if (emailExist) {
+    throw new Error("Email already exists");
+  }
+  //* 2. Create the new user
+  const newAddUser = new User({
+    name: name,
+    email: email,
+    password: bcrypt.hashSync(password, 10), // hash password
+  });
+  //* 3. Save the data
+  await newAddUser.save();
+  //* 4. generate token
+  const token = generateTokenForUser(newAddUser);
+  //* 5. Return the user data
+  return {
+    _id: newAddUser._id,
+    name: newAddUser.name,
+    email: newAddUser.email,
+    role: newAddUser.role,
+    token: token,
+  };
+};
+
+const updateUser = async (user_id, name, email, role) => {
+  const updatedUser = await User.findByIdAndUpdate(
+    user_id,
+    {
+      name,
+      email,
+      role,
+    },
+    { new: true }
+  );
+  return updatedUser;
+};
+
 module.exports = {
   getUserByEmail,
   loginUser,
+  userAdd,
+  getUsers,
   signUpUser,
+  updateUser,
 };

@@ -1,7 +1,7 @@
 const express = require("express");
 const {
-  getSubsciptions,
-  getSubsciption,
+  getSubscriptions,
+  getSubscription,
   addNewSubscription,
   updateSubscription,
   deleteSubscription,
@@ -10,11 +10,12 @@ const {
 const router = express.Router();
 
 const { isUserValid, isAdmin } = require("../middleware/auth");
+const Subscription = require("../models/subscriptions");
 
 // get subscriptions
 router.get("/", isUserValid, async (req, res) => {
   try {
-    const subsciptions = await getSubsciptions(req.user);
+    const subsciptions = await getSubscriptions(req.user);
     res.status(200).send(subsciptions);
   } catch (error) {
     res.status(400).send({ message: error.message });
@@ -24,7 +25,7 @@ router.get("/", isUserValid, async (req, res) => {
 /// getSubscription
 router.get("/:id", async (req, res) => {
   try {
-    const subscription = await getSubsciption(req.params.id);
+    const subscription = await getSubscription(req.params.id);
     if (subscription) {
       res.status(200).send(subscription);
     } else {
@@ -38,15 +39,11 @@ router.get("/:id", async (req, res) => {
 // POST
 router.post("/", async (req, res) => {
   try {
-    const { customerName, customerEmail, totalPrice, status } = req.body;
-    const newSubscription = await addNewOrder(
-      customerName,
-      customerEmail,
-      totalPrice,
-      status
-    );
+    const { totalPrice, status } = req.body;
+    const newSubscription = new Subscription(req.user_id, totalPrice, status);
     res.status(200).send(newSubscription);
   } catch (error) {
+    console.log(error);
     res.status(400).send({ message: error.message });
   }
 });
@@ -54,18 +51,9 @@ router.post("/", async (req, res) => {
 // PUT
 router.put("/:id", isAdmin, async (req, res) => {
   try {
-    const {
-      customerName,
-      customerEmail,
-      totalPrice,
-      status,
-      billplz_id,
-      paid_at,
-    } = req.body;
+    const { totalPrice, status, billplz_id, paid_at } = req.body;
     const updatedSubscription = await updateSubscription(
       req.params.id,
-      customerName,
-      customerEmail,
       totalPrice,
       status,
       billplz_id,
