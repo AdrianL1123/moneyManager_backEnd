@@ -7,6 +7,7 @@ const {
   getUsers,
 } = require("../controllers/user");
 const { isAdmin } = require("../middleware/auth");
+const User = require("../models/user");
 const router = express.Router();
 
 //* /login route
@@ -62,12 +63,23 @@ router.post("/userAdd", isAdmin, async (req, res) => {
 });
 
 //* update
-router.put("/updateUser/:id", async (req, res) => {
+router.put("/:id", isAdmin, async (req, res) => {
   try {
     const { name, email, role } = req.body;
     const user_id = req.params.id;
     const updatedIncome = await updateUser(user_id, name, email, role);
     res.status(200).send(updatedIncome);
+  } catch (e) {
+    res.status(400).send({ message: e.message });
+  }
+});
+
+// DELETE
+//* delete
+router.delete("/:id", isAdmin, async (req, res) => {
+  try {
+    const deleteUser = await User.findByIdAndDelete(req.params.id);
+    res.status(200).send(deleteUser);
   } catch (e) {
     res.status(400).send({ message: e.message });
   }
