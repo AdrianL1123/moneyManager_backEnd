@@ -9,6 +9,12 @@ const getUserByEmail = async (email) => {
   return user;
 };
 
+// const getUserByID = async (user_id) => {
+//   //find one user with the provided id
+//   const userID = await User.findOne({ _id: _id });
+//   return userID;
+// };
+
 const generateTokenForUser = (user) => {
   return jwt.sign(
     {

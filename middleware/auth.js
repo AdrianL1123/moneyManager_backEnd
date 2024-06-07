@@ -7,7 +7,6 @@ const isUserValid = async (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, JWT_PRIVATE_KEY);
     const user = await getUserByEmail(decoded.email);
-    console.log(decoded);
     // if user exist
     if (user) {
       // this is a valid user

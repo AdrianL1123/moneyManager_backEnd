@@ -9,11 +9,10 @@ const {
 // set up product router
 const router = express.Router();
 
-const { isUserValid, isAdmin } = require("../middleware/auth");
-const Subscription = require("../models/subscriptions");
+const { isAdmin, isUserValid } = require("../middleware/auth");
 
 // get subscriptions
-router.get("/", isUserValid, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const subsciptions = await getSubscriptions(req.user);
     res.status(200).send(subsciptions);
@@ -22,8 +21,8 @@ router.get("/", isUserValid, async (req, res) => {
   }
 });
 
-/// getSubscription
-router.get("/:id", async (req, res) => {
+/// getSubscriptions
+router.get("/:id", isUserValid, async (req, res) => {
   try {
     const subscription = await getSubscription(req.params.id);
     if (subscription) {
@@ -37,13 +36,17 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST
-router.post("/", async (req, res) => {
+router.post("/", isUserValid, async (req, res) => {
   try {
     const { totalPrice, status } = req.body;
-    const newSubscription = new Subscription(req.user_id, totalPrice, status);
+    const newSubscription = await addNewSubscription(
+      req.user,
+      totalPrice,
+      status
+    );
     res.status(200).send(newSubscription);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(400).send({ message: error.message });
   }
 });
@@ -68,14 +71,15 @@ router.put("/:id", isAdmin, async (req, res) => {
 router.delete("/:id", isAdmin, async (req, res) => {
   try {
     const id = req.params.id;
-    const subscription = await getSubsciption(id);
+    const subscription = await getSubscription(id);
     if (subscription) {
-      await deleteOrder(id);
+      await deleteSubscription(id);
       res.status(200).send("Deleted");
     } else {
       res.status(404).send("Subscription not found");
     }
   } catch (e) {
+    console.log(e);
     res.status(400).send({ msg: e.message });
   }
 });

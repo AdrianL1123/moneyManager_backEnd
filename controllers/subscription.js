@@ -11,13 +11,9 @@ const {
 } = require("../config");
 
 //get orders
-const getSubscriptions = async (user) => {
+const getSubscriptions = async () => {
   try {
-    let filters = {};
-    if (user && user.role === "user") {
-      filters.user_id = user._id;
-    }
-    const subsciptions = await Subscription.find(filters).sort({ _id: -1 });
+    const subsciptions = await Subscription.find();
     return subsciptions;
   } catch (error) {
     throw new Error(error);
@@ -45,7 +41,9 @@ const addNewSubscription = async (user_id, totalPrice, status) => {
     },
     data: {
       collection_id: BILLPLZ_COLLECTION_ID,
-      amount: 5 * 100,
+      name: user_id.name,
+      email: user_id.email,
+      amount: totalPrice * 100,
       description: "Payment for subscription",
       callback_url: FRONTEND_URL + "verify-payment",
       redirect_url: FRONTEND_URL + "verify-payment",
@@ -58,9 +56,9 @@ const addNewSubscription = async (user_id, totalPrice, status) => {
 
   // 3. create a new order
   const newSubscription = new Subscription({
+    user_id,
     totalPrice,
     status,
-    user_id,
     billplz_id,
   });
   await newSubscription.save();
