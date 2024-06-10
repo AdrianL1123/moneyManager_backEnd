@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-
+const { MONGODB_URL } = require("./config");
 const app = express();
 
 app.use(express.json());
@@ -20,7 +20,7 @@ app.use(corsHandler);
 
 //* connect to mongodb
 mongoose
-  .connect("mongodb://127.0.0.1:27017/money_manager")
+  .connect(MONGODB_URL + "money_manager")
   .then(() => {
     console.log("MongoDB Connected");
   })
